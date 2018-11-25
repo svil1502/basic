@@ -13,7 +13,10 @@ $config = [
     ],
     'modules' => [
         'exchange' => [
-            'class' => \carono\exchange1c\ExchangeModule::class
+            'class' => \carono\exchange1c\ExchangeModule::class,
+            'class' => \carono\exchange1c\ExchangeModule::class,
+            'groupClass' => \app\models\Group::class,
+            'productClass' => \app\models\Product::class,
         ]
     ],
     'components' => [
