@@ -1,81 +1,166 @@
 <?php
 
-/* @var $this \yii\web\View */
-/* @var $content string */
-
-use app\widgets\Alert;
-use yii\helpers\Html;
-use yii\bootstrap\Nav;
-use yii\bootstrap\NavBar;
+use carono\exchange1c\assets\AppAsset;
+use carono\exchange1c\widgets\Menu;
 use yii\widgets\Breadcrumbs;
-use app\assets\AppAsset;
+use yii\helpers\ArrayHelper;
+use yii\helpers\Url;
 
-AppAsset::register($this);
+/**
+ * @var \yii\web\View $this
+ * @var string $content
+ */
+
+$actionId = Yii::$app->controller->id . '/' . Yii::$app->controller->action->id;
+$controller = Yii::$app->controller->id;
+
+$bundle = AppAsset::register($this);
+$ico = $this->assetManager->publish('@vendor/carono/yii2-1c-exchange/assets/other/favicon.ico');
+$this->beginPage();
 ?>
-<?php $this->beginPage() ?>
 <!DOCTYPE html>
-<html lang="<?= Yii::$app->language ?>">
+<html>
 <head>
-    <meta charset="<?= Yii::$app->charset ?>">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <?= Html::csrfMetaTags() ?>
-    <title><?= Html::encode($this->title) ?></title>
+    <link rel="shortcut icon" type="image/x-icon" href="<?= $ico[1] ?>"/>
+    <title>1С Exchange - <?= $this->title ?></title>
     <?php $this->head() ?>
 </head>
+
 <body>
 <?php $this->beginBody() ?>
+<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                    data-target="#sidebar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="<?= Url::to(['default/index']) ?>">
+                <span>YII2</span>Модуль обмена с 1С
+            </a>
+            <ul class="user-menu">
+                <li class="pull-right">
+                    <a href="/"><?= Yii::$app->name ?></a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
 
-<div class="wrap">
-    <?php
-    NavBar::begin([
-        'brandLabel' => Yii::$app->name,
-        'brandUrl' => Yii::$app->homeUrl,
-        'options' => [
-            'class' => 'navbar-inverse navbar-fixed-top',
-        ],
-    ]);
-    echo Nav::widget([
-        'options' => ['class' => 'navbar-nav navbar-right'],
+
+<div id="sidebar-collapse" class="col-sm-3 col-lg-2 sidebar">
+    <?= Menu::widget([
+        'options' => ['class' => 'nav menu'],
         'items' => [
-            ['label' => 'Home', 'url' => ['/site/index']],
-            ['label' => 'About', 'url' => ['/site/about']],
-            ['label' => 'Contact', 'url' => ['/site/contact']],
-            Yii::$app->user->isGuest ? (
-                ['label' => 'Login', 'url' => ['/site/login']]
-            ) : (
-                '<li>'
-                . Html::beginForm(['/site/logout'], 'post')
-                . Html::submitButton(
-                    'Logout (' . Yii::$app->user->identity->username . ')',
-                    ['class' => 'btn btn-link logout']
-                )
-                . Html::endForm()
-                . '</li>'
-            )
-        ],
+            [
+                'label' => '<i class="glyph glyphicon glyphicon-book"></i>Старт Yii2 1C Exchange',
+                'url' => ['article/index'],
+                'active' => in_array(Yii::$app->controller->id, ['article']),
+                'encode' => false
+            ],
+            ['options' => ['class' => 'divider']],
+            [
+                'label' => '<i class="glyph glyphicon glyphicon-import"></i>Импорт',
+                'url' => ['default/import'],
+                'encode' => false
+            ],
+            [
+                'label' => '<i class="glyph glyphicon glyphicon-export"></i>Экспорт',
+                'url' => ['default/export'],
+                'encode' => false
+            ],
+            [
+                'label' => '<i class="glyph glyphicon glyphicon-blackboard"></i>Монитор',
+                'url' => ['default/monitor'],
+                'encode' => false
+            ],
+            ['options' => ['class' => 'divider']],
+            [
+                'label' => '<i class="glyph glyphicon glyphicon-book"></i>CommerceML',
+                'url' => ['default/documentation'],
+                'encode' => false
+            ],
+
+            ['options' => ['class' => 'divider']],
+            [
+                'label' => '<i class="glyph glyphicon glyphicon-folder-open"></i>Временные файлы',
+                'url' => ['default/files'],
+                'encode' => false
+            ],
+            [
+                'label' => '<i class="glyph glyphicon glyphicon-cog"></i>Интерфейсы',
+                'url' => ['default/interfaces'],
+                'active' => in_array($controller, ['interface']) || $actionId == 'default/interfaces',
+                'encode' => false
+            ],
+            [
+                'label' => '<i class="glyph glyphicon glyphicon-wrench"></i>Настройки модуля',
+                'url' => ['default/settings'],
+                'encode' => false
+            ],
+            ['options' => ['class' => 'divider']],
+            [
+                'label' => '<i class="glyph glyphicon glyphicon-asterisk"></i>Тестирование',
+                'url' => ['testing/index'],
+                'encode' => false
+            ],
+        ]
     ]);
-    NavBar::end();
     ?>
 
-    <div class="container">
-        <?= Breadcrumbs::widget([
-            'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],
-        ]) ?>
-        <?= Alert::widget() ?>
-        <?= $content ?>
+    <div class="attribution">Template by
+        <a href="http://www.medialoot.com/item/lumino-admin-bootstrap-template/">Medialoot</a><br/>
     </div>
 </div>
 
-<footer class="footer">
-    <div class="container">
-        <p class="pull-left">&copy; My Company <?= date('Y') ?></p>
-
-        <p class="pull-right"><?= Yii::powered() ?></p>
+<div class="col-sm-9 col-sm-offset-3 col-lg-10 col-lg-offset-2 main">
+    <div class="row">
+        <?php
+        echo Breadcrumbs::widget([
+            'links' => ArrayHelper::getValue($this->params, 'breadcrumbs', []),
+            'options' => [
+                'class' => 'breadcrumb col-lg-7'
+            ],
+            'homeLink' => [
+                'label' => '<svg class="glyph stroked home"><use xlink:href="#stroked-home"></use></svg>',
+                'encode' => false,
+                'url' => ['default/index']
+            ]
+        ]);
+        ?>
+        <div class="col-lg-5 action-menu">
+            <?php
+            echo Menu::widget([
+                'items' => ArrayHelper::getValue($this->params, 'buttons', []),
+                'linkTemplate' => '<a href="{url}"{options}>{label}</a>',
+                'itemOptions' => ['tag' => false],
+                'options' => [
+                    'tag' => 'div',
+                    'class' => ['btn-group pull-right'],
+                ],
+            ]);
+            ?>
+        </div>
     </div>
-</footer>
+
+    <div class="row">
+        <div class="col-lg-12">
+            <h1 class="page-header"><?= $this->title ?></h1>
+        </div>
+    </div>
+
+    <?= $content ?>
+
+</div>
 
 <?php $this->endBody() ?>
 </body>
 </html>
+
 <?php $this->endPage() ?>
+
