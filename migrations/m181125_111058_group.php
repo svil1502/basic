@@ -12,7 +12,12 @@ class m181125_111058_group extends Migration
      */
     public function safeUp()
     {
-
+        $this->createTable('{{%group}}', [
+            'id' => self::primaryKey(),
+            'name' => self::string()->comment('Наименование группы'),
+            'parent_id' => self::integer()->comment('Родительская группа'),
+            'accounting_id' => self::string()->comment('Код в 1С')->unique(),
+        ]);
     }
 
     /**
